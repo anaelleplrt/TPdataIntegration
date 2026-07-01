@@ -122,8 +122,8 @@ def quality_scorecard(caract, lieux, usagers, vehicules):
     def uniqueness(df):
         return 100 - df.duplicated().sum() / len(df) * 100
 
-    lat = caract["lat"].astype(str).str.replace(",", ".").astype(float) if caract["lat"].dtype == object else caract["lat"]
-    lon = caract["long"].astype(str).str.replace(",", ".").astype(float) if caract["long"].dtype == object else caract["long"]
+    lat = pd.to_numeric(caract["lat"].astype(str).str.replace(",", "."), errors="coerce")
+    lon = pd.to_numeric(caract["long"].astype(str).str.replace(",", "."), errors="coerce")
     geo_valid = (lat.between(41, 51.5) & lon.between(-5.5, 10)).mean() * 100
     vma_valid = pd.to_numeric(lieux["vma"], errors="coerce").between(5, 130).mean() * 100
     age = 2024 - usagers["an_nais"]
@@ -516,4 +516,3 @@ with tab_explorer:
 
     st.subheader("Row preview")
     st.dataframe(df.head(50))
-
